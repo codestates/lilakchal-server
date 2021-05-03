@@ -23,7 +23,6 @@ module.exports = {
               name: name,
             },
           }).then((user) => {
-            // console.log('3. 회원가입', user);
             const { name, id } = user[0].dataValues;
             res.set('Set-Cookie', [`accessToken=${accessToken}`]);
             res.status(200).json({ name, id });
