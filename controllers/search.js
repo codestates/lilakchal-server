@@ -1,6 +1,7 @@
 const sequelize = require('sequelize');
 const Op = sequelize.Op;
 const { Item: ItemModel } = require('../models');
+const logger = require('../config/winston');
 
 module.exports = {
   'keyword': async (req, res) => {
@@ -41,7 +42,8 @@ module.exports = {
             const items = [];
             res.status(204).json({ items });
           }
-        }).catch(() => {
+        }).catch((error) => {
+          logger.error(`Error in Search By Keywords: ${error}`);
           res.status(500).json({ 'message': 'Fail to load data from database' });
         });
     }
@@ -68,7 +70,8 @@ module.exports = {
             const items = [];
             res.status(204).json({ items });
           }
-        }).catch(() => {
+        }).catch((error) => {
+          logger.error(`Error in Search All: ${error}`);
           res.status(500).json({ 'message': 'Fail to load data from database' });
         });
     }
