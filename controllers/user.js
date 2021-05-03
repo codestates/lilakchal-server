@@ -1,11 +1,10 @@
 const axios = require('axios');
 const { User: UserModel, Item: ItemModel } = require('../models');
+const logger = require('../config/winston');
 
 module.exports = {
-  // 카카오 오어스 로그인, 강제회원가입
   'oauth': async (req, res) => {
     const accessToken = req.body.access_token;
-    // console.log('1. 토큰받음', req.body.access_token);
     axios.get('https://kapi.kakao.com/v2/user/me', {
       headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -13,7 +12,6 @@ module.exports = {
       },
     })
       .then((data) => {
-        // console.log('2. 유저정보받음', data.data);
         const kakaoid = data.data.id;
         const name = data.data.properties.nickname;
         UserModel
@@ -30,11 +28,12 @@ module.exports = {
             res.set('Set-Cookie', [`accessToken=${accessToken}`]);
             res.status(200).json({ name, id });
           });
-      }).catch(e => {
+      }).catch(error => {
         res.status(500).json({ 'message': 'Fail to login' });
+        logger.error(`Error in Oauth: ${error}`);
       });
   },
-  // 닉네임 변경
+
   'name': async (req, res) => {
     const { userId, name } = req.body;
     await UserModel.update({ name: name }, {
@@ -44,12 +43,12 @@ module.exports = {
     })
       .then(() => {
         res.status(200).json({ 'message': 'ok' });
-      }).catch(() => {
+      }).catch((error) => {
         res.status(500).json({ 'message': 'Fail to update name' });
+        logger.error(`Error in ChangeName: ${error}`);
       });
   },
 
-  // 입찰에 참여한 물품 조회
   'getBuyerItems': async (req, res) => {
     const { userId, offset, city } = req.body;
     await UserModel.findAll({
@@ -81,12 +80,12 @@ module.exports = {
           const items = [];
           res.status(200).json({ items });
         }
-      }).catch(() => {
+      }).catch((error) => {
         res.status(500).json({ 'message': 'Fail to load data from database' });
+        logger.error(`Error in GetItemsByBuyer: ${error}`);
       });
   },
 
-  // 경매에 내놓은 물품 조회
   'getSellerItems': async (req, res) => {
     const { userId, offset, city } = req.body;
     await UserModel.findAll({
@@ -118,8 +117,9 @@ module.exports = {
           const items = [];
           res.status(200).json({ items });
         }
-      }).catch(() => {
+      }).catch((error) => {
         res.status(500).json({ 'message': 'Fail to load data from database' });
+        logger.error(`Error in GetItemsBySeller: ${error}`);
       });
   },
 };
