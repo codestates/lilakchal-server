@@ -1,4 +1,5 @@
 const { Item: ItemModel, Seller_item: SellerModel } = require('../models');
+const logger = require('../config/winston');
 
 module.exports = {
   // 경매 물품 등록
@@ -23,7 +24,8 @@ module.exports = {
       })
       .then(() => {
         res.status(201).json({ 'message': 'ok' });
-      }).catch(() => {
+      }).catch((error) => {
+        logger.error(`Error in Register Auction: ${error}`);
         res.status(500).json({ 'message': 'Fail to load data from database' });
       });
   }
