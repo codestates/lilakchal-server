@@ -2,7 +2,7 @@
 
 ![small](https://user-images.githubusercontent.com/72400381/115680097-384a2980-a38e-11eb-9c72-4e7d5e4dca48.png)
 
-### [땅땅마켓](https://www.ttangttang.shop)
+### [땅땅마켓](https://ttangttang.shop)
 
 ### [Client Repository](https://github.com/codestates/lilakchal-client)
 
